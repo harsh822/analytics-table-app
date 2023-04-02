@@ -3,12 +3,21 @@ import DateRangePicker from "./DateRangePicker";
 import Settings from "./Settings";
 import { Button, Row, Col } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DynamicTable from "./DynamicTable";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getAnalyticsFromDB } from "../redux/actions/analyticsAction";
+import { getSettingsFromDB } from "../redux/actions/settingsAction";
 function Analytics() {
+  const dispatch = useDispatch();
   const [settings, setSettings] = useState();
   const analyticsArr = useSelector((state) => state.analytics.value);
+
+  useEffect(() => {
+    dispatch(getAnalyticsFromDB());
+    dispatch(getSettingsFromDB());
+  }, []);
 
   function handleChange(val) {
     setSettings(val);
@@ -19,7 +28,7 @@ function Analytics() {
         <Col
           span={1}
           className="leftContainer"
-          style={{ height: analyticsArr.length < 18 ? "100vh" : "" }}
+          style={{ height: analyticsArr?.length < 18 ? "100vh" : "" }}
         ></Col>
         <Col span={23} className="rightContainer">
           <h3>Analytics</h3>

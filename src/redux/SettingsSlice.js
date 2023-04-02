@@ -1,4 +1,7 @@
 import { createSlice, current } from "@reduxjs/toolkit";
+import { getSettingsFromDB } from "./actions/settingsAction";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from ".././firebase.js";
 export const settingsSlice = createSlice({
   name: "settings",
   initialState: {
@@ -49,6 +52,8 @@ export const settingsSlice = createSlice({
         isVisible: true,
       },
     ],
+    loader: false,
+    errors: {},
   },
   reducers: {
     editSettings: (state, action) => {
@@ -58,6 +63,14 @@ export const settingsSlice = createSlice({
         ? false
         : true;
       console.log("After", current(state));
+      try {
+        const docRef = doc(db, "settings", "12345");
+        setDoc(docRef, Object.assign({}, state.value)).then(() => {
+          console.log("Settings doc updated");
+        });
+      } catch (error) {
+        console.error("Error", error);
+      }
     },
     editBorderSettings: (state, action) => {
       state.value[action.payload.index].isBorderVisible = state.value[
@@ -65,16 +78,53 @@ export const settingsSlice = createSlice({
       ]?.isBorderVisible
         ? false
         : true;
+      try {
+        const docRef = doc(db, "settings", "12345");
+        setDoc(docRef, Object.assign({}, state.value)).then(() => {
+          console.log("Settings doc updated");
+        });
+      } catch (error) {
+        console.error("Error", error);
+      }
     },
     modifyVisibility: (state, action) => {
       state.value.map((setting) => {
         setting.isBorderVisible = setting.isVisible;
       });
+      try {
+        const docRef = doc(db, "settings", "12345");
+        setDoc(docRef, Object.assign({}, state.value)).then(() => {
+          console.log("Settings doc updated");
+        });
+      } catch (error) {
+        console.error("Error", error);
+      }
     },
     swapSettings: (state, action) => {
       let temp = state.value[action.payload.from];
       state.value[action.payload.from] = state.value[action.payload.to];
       state.value[action.payload.to] = temp;
+      try {
+        const docRef = doc(db, "settings", "12345");
+        setDoc(docRef, Object.assign({}, state.value)).then(() => {
+          console.log("Settings doc updated");
+        });
+      } catch (error) {
+        console.error("Error", error);
+      }
+    },
+  },
+  extraReducers: {
+    [getSettingsFromDB.pending]: (state, action) => {
+      state.loader = true;
+    },
+    [getSettingsFromDB.fulfilled]: (state, action) => {
+      state.loader = false;
+      state.value = action.payload;
+    },
+    [getSettingsFromDB.rejected]: (state, action) => {
+      state.loader = false;
+      state.errors = action.payload;
     },
   },
 });
