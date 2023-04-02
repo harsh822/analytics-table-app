@@ -11,13 +11,9 @@ import { Button, Row, Col } from "antd";
 
 function Settings(props) {
   const [editIndex, setEditIndex] = useState([]);
-  const [isSettingsVisible, setIsSettingsVisible] = useState();
-  //   setIsSettingsVisible(props.isSettingsVisible);
-  console.log("ISSettingsVisible", isSettingsVisible);
   const dispatch = useDispatch();
   const settingsArr = useSelector((state) => state.settings.value);
-  console.log("Props", props);
-  console.log(editIndex);
+
   function convertHeaderForSettings(header) {
     if (header == "app_id") {
       return "App";
@@ -30,16 +26,18 @@ function Settings(props) {
     }
     return header.charAt(0).toUpperCase() + header.slice(1);
   }
+
   function handleBoxClick(index) {
-    // editIndex.push(index);
     setEditIndex([...editIndex, index]);
     dispatch(editBorderSettings({ index }));
   }
+
   function applyChanges() {
     editIndex.map((index) => dispatch(editSettings({ index })));
     setEditIndex([]);
     props.updateVisiblity(false);
   }
+
   function handleCancel() {
     dispatch(modifyVisibility());
     setEditIndex([]);

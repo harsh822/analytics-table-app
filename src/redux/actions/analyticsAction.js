@@ -6,6 +6,9 @@ export const getAnalytics = createAsyncThunk("analytics", async (dates) => {
   const appsResponse = await axios.get(
     "http://go-dev.greedygame.com/v3/dummy/apps"
   );
+  if (dates.toDate == "" && dates.fromDate == "") {
+    return [];
+  }
   const response = await axios.get(
     `https://go-dev.greedygame.com/v3/dummy/report?startDate=${dates.fromDate}&endDate=${dates.toDate}`
   );

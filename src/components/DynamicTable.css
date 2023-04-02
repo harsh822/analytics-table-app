@@ -13,16 +13,12 @@
     #customers tr {
         border-bottom: 1px solid #ddd;
     }
-  
-  /* #customers tr:nth-child(even){background-color: #f2f2f2;}
-   */
-  /* #customers tr:hover {background-color: #ddd;} */
+
   
   #customers th {
     padding-top: 20px;
     padding-bottom: 20px;
     text-align: center;
-    /* background-color: #04AA6D; */
     color: #707070;
   }
  th > .header {
@@ -32,4 +28,14 @@
 
  .filter-button {
   margin-bottom: 3px;
+ }
+ .loader {
+  position:absolute;
+  top: 40%;
+  left:50%;
+ }
+ .empty {
+  position:absolute;
+  top: 40%;
+  left: 30%;
  }

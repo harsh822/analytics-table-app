@@ -9,9 +9,9 @@
     margin: 0 0 5px 0;
 }
 .dragBox {
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
     cursor: pointer;
     padding-left: 1rem;
     display: flex;

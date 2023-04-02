@@ -65,7 +65,6 @@ export const settingsSlice = createSlice({
       ]?.isBorderVisible
         ? false
         : true;
-      //   console.log("After", current(state));
     },
     modifyVisibility: (state, action) => {
       state.value.map((setting) => {
