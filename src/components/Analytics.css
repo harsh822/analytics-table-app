@@ -1,0 +1,17 @@
+.mainContainer {
+    display: flex;
+    /* flex-direction: ; */
+}
+.leftContainer {
+    height: 130vh;
+    /* width: 5vw; */
+    background-color: #192F48;
+}
+.rightContainer {
+    /* width: 100%; */
+    padding: 0 2rem;
+}
+.dateAndSettingButtons {
+    display: flex;
+  justify-content: space-between;
+}
