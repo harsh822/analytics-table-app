@@ -19,6 +19,7 @@ function DateRangePicker() {
   }
   return (
     <RangePicker
+      disabledDate={disabledDate}
       onChange={(dates) => {
         let fromDate =
           dates != null ? moment(dates[0].$d).format("YYYY-MM-DD") : "";

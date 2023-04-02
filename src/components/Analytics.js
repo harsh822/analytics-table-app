@@ -29,8 +29,9 @@ function Analytics() {
               onClick={() => {
                 settings ? setSettings(false) : setSettings(true);
               }}
+              className="setting-button"
             >
-              <SettingOutlined />
+              <SettingOutlined className="setting-icon" />
               Settings
             </Button>
           </div>

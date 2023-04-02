@@ -10,7 +10,6 @@ import { filterAnalytics, sortAnalytics } from "../redux/AnalyticsSlice";
 function CustomPopover(props) {
   const dispatch = useDispatch();
   const [sorted, setSorted] = useState();
-  const [searchPhrase, setSearchPhrase] = useState();
 
   function sort() {
     setSorted(!sorted);
@@ -27,14 +26,13 @@ function CustomPopover(props) {
     <>
       <ul>
         <li className="sort-list" onClick={sort}>
-          Sort {!sorted && <SortAscendingOutlined />}
-          {sorted && <SortDescendingOutlined />}
+          Sort {!sorted && <SortAscendingOutlined className="sort-icon" />}
+          {sorted && <SortDescendingOutlined className="sort-icon" />}
         </li>
         <li>
           <Input
             placeholder="Filter"
             allowClear
-            value={searchPhrase}
             onChange={search}
             style={{
               width: 200,

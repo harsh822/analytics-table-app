@@ -11,3 +11,9 @@
     display: flex;
   justify-content: space-between;
 }
+.setting-icon {
+    color: blue;
+}
+.setting-button {
+    font-weight: bold;
+}

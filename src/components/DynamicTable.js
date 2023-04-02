@@ -8,6 +8,7 @@ import EmptyImage from "../assets/empty.png";
 function DynamicTable() {
   const settingsArr = useSelector((state) => state.settings.value);
   const analyticsArr = useSelector((state) => state.analytics.value);
+  const filteredArr = useSelector((state) => state.analytics.analyticsValue);
   const loader = useSelector((state) => state.analytics.loader);
   const [open, setOpen] = useState({ index: 0, isOpen: false });
   const hide = (index) => {
@@ -19,7 +20,7 @@ function DynamicTable() {
   const tdData = () => {
     return analyticsArr.map((analytics, index) => {
       return (
-        <tr>
+        <tr key={index}>
           {settingsArr.map(
             (setting, index) =>
               setting.isVisible && (
@@ -57,35 +58,36 @@ function DynamicTable() {
         <thead></thead>
         <tbody>
           <tr>
-            {settingsArr.map(
-              (setting, index) =>
-                setting.isVisible && (
-                  <th key={index}>
-                    <div className="header" key={index}>
-                      <Popover
-                        key={index}
-                        content={
-                          <>
-                            <CustomPopover {...setting} />{" "}
-                            <a onClick={() => hide(index)}>Close</a>
-                          </>
-                        }
-                        title={convertHeader(setting.columnName)}
-                        trigger="click"
-                        open={index == open.index ? open.isOpen : false}
-                        onOpenChange={() => handleOpenChange(index)}
-                      >
-                        <FilterFilled
-                          onClick={() => applyfilters(index, setting)}
-                          className="filter-button"
+            {(filteredArr.length != 0 || analyticsArr.length != 0) &&
+              settingsArr.map(
+                (setting, index) =>
+                  setting.isVisible && (
+                    <th key={index}>
+                      <div className="header" key={index}>
+                        <Popover
                           key={index}
-                        />
-                      </Popover>
-                      {convertHeader(setting.columnName)}
-                    </div>
-                  </th>
-                )
-            )}
+                          content={
+                            <>
+                              <CustomPopover {...setting} />{" "}
+                              <a onClick={() => hide(index)}>Close</a>
+                            </>
+                          }
+                          title={convertHeader(setting.columnName)}
+                          trigger="click"
+                          open={index == open.index ? open.isOpen : false}
+                          onOpenChange={() => handleOpenChange(index)}
+                        >
+                          <FilterFilled
+                            onClick={() => applyfilters(index, setting)}
+                            className="filter-button"
+                            key={index}
+                          />
+                        </Popover>
+                        {convertHeader(setting.columnName)}
+                      </div>
+                    </th>
+                  )
+              )}
           </tr>
           {!loader ? (
             analyticsArr.length == 0 ? (
