@@ -1,19 +1,23 @@
 import "./DynamicTable.css";
 import { useSelector, useDispatch } from "react-redux";
-import { Popover } from "antd";
+import { Popover, Button } from "antd";
 import { FilterFilled } from "@ant-design/icons";
-import { addAnalytics } from "../redux/AnalyticsSlice";
+// import { addAnalytics } from "../redux/AnalyticsSlice";
 import { useState } from "react";
+import CustomPopover from "./CustomPopover";
 function DynamicTable() {
   const dispatch = useDispatch();
   const settingsArr = useSelector((state) => state.settings.value);
   const analyticsArr = useSelector((state) => state.analytics.value);
+  const loader = useSelector((state) => state.analytics.loader);
   const [sorted, setSorted] = useState({});
-  const [open, setOpen] = useState(false);
-
-  console.log("Analytics arrrrrrrrrrrrrr", analyticsArr);
-
-  // get table row data
+  const [open, setOpen] = useState({ index: 0, isOpen: false });
+  const hide = (index) => {
+    setOpen({ index: index, isOpen: false });
+  };
+  const handleOpenChange = (index) => {
+    setOpen({ index: index, open: open.isOpen });
+  };
   const tdData = () => {
     return analyticsArr.map((analytics, index) => {
       return (
@@ -34,18 +38,8 @@ function DynamicTable() {
     }
     return header.charAt(0).toUpperCase() + header.slice(1);
   }
-  function applyfilters(setting) {}
-  function sort(setting) {
-    let sortBy = setting.columnName;
-    setSorted({ sorted: sortBy, reversed: !sorted.reversed });
-    let analyticsArrCopy = [...analyticsArr];
-    analyticsArrCopy.sort((analyticsA, analyticsB) => {
-      if (sorted.reversed) {
-        return analyticsB[sortBy] - analyticsA[sortBy];
-      }
-      return analyticsA[sortBy] - analyticsB[sortBy];
-    });
-    dispatch(addAnalytics(analyticsArrCopy));
+  function applyfilters(index) {
+    setOpen({ index: index, isOpen: !open.isOpen });
   }
 
   return (
@@ -56,12 +50,27 @@ function DynamicTable() {
             settingsArr.map(
               (setting, index) =>
                 setting.isVisible && (
-                  <th>
-                    <div className="header">
-                      <FilterFilled
-                        onClick={() => applyfilters(setting)}
-                        className="filter-button"
-                      />
+                  <th key={index}>
+                    <div className="header" key={index}>
+                      <Popover
+                        key={index}
+                        content={
+                          <>
+                            <CustomPopover {...setting} />{" "}
+                            <a onClick={() => hide(index)}>Close</a>
+                          </>
+                        }
+                        title={convertHeader(setting.columnName)}
+                        trigger="click"
+                        open={index == open.index ? open.isOpen : false}
+                        onOpenChange={() => handleOpenChange(index)}
+                      >
+                        <FilterFilled
+                          onClick={() => applyfilters(index, setting)}
+                          className="filter-button"
+                          key={index}
+                        />
+                      </Popover>
                       {convertHeader(setting.columnName)}
                     </div>
                   </th>
@@ -70,15 +79,6 @@ function DynamicTable() {
         </tr>
         {tdData()}
       </table>
-      {/* <Popover
-        content={<a onClick={hide}>Close</a>}
-        title="Title"
-        trigger="click"
-        open={open}
-        onOpenChange={handleOpenChange}
-      >
-        <Button type="primary">Click me</Button>
-      </Popover> */}
     </>
   );
 }

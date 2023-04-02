@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addAnalytics } from "../redux/AnalyticsSlice";
 import { addApps } from "../redux/AppSlice";
+import { getAnalytics } from "../redux/actions/analyticsAction";
 import "./DateRangePicker.css";
 import { DatePicker } from "antd";
 import moment from "moment";
@@ -19,27 +20,29 @@ function DateRangePicker() {
   const fetchAnalyticsData = (fromDate, toDate) => {
     setDateRange([fromDate, toDate]);
     // fethAppData();
-    fetch(
-      `https://go-dev.greedygame.com/v3/dummy/report?startDate=${fromDate}&endDate=${toDate}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        console.log("APi Data", result);
-        result.data.map((val) => {
-          val.date = moment(val.date).format("DD-MMM-YYYY");
-          val.rate = (val.requests / val.responses) * 100;
-          val.ctr = (val.clicks / val.impressions) * 100;
-          val.app_id = appsArr.find(
-            (apps) => apps.app_id === val.app_id
-          ).app_name;
-        });
-        dispatch(addAnalytics(result.data));
-        // data.data.rate = (data.requests / data.response) * 100;
-        // data.data.ctr = (data.clicks / data.impressions) * 100;
-        console.log("resssssss", result);
-      });
+    dispatch(getAnalytics({ fromDate, toDate }));
+    // console.log("Get analytics😑😑", analytics);
+    // fetch(
+    //   `https://go-dev.greedygame.com/v3/dummy/report?startDate=${fromDate}&endDate=${toDate}`
+    // )
+    //   .then((response) => {
+    //     return response.json();
+    //   })
+    //   .then((result) => {
+    //     console.log("APi Data", result);
+    //     result.data.map((val) => {
+    //       val.date = moment(val.date).format("DD-MMM-YYYY");
+    //       val.rate = (val.requests / val.responses) * 100;
+    //       val.ctr = (val.clicks / val.impressions) * 100;
+    //       val.app_id = appsArr.find(
+    //         (apps) => apps.app_id === val.app_id
+    //       ).app_name;
+    //     });
+    //     dispatch(addAnalytics(result.data));
+    //     // data.data.rate = (data.requests / data.response) * 100;
+    //     // data.data.ctr = (data.clicks / data.impressions) * 100;
+    //     console.log("resssssss", result);
+    //   });
   };
 
   function fethAppData() {

@@ -1,25 +1,69 @@
 import { createSlice, current } from "@reduxjs/toolkit";
+import { getAnalytics } from "./actions/analyticsAction";
 export const analyticsSlice = createSlice({
   name: "analytics",
   initialState: {
     value: [],
+    analyticsValue: [],
+    loader: false,
+    errors: {},
   },
   reducers: {
-    addAnalytics: (state, action) => {
-      console.log(action.payload);
-      // state.value.length = 0;
-      state.value = action.payload.slice(0, 17);
+    sortAnalytics: (state, action) => {
+      let sortBy = action.payload.sortBy;
+      let sorted = action.payload.sorted;
+      if (sortBy == "app_id") {
+        state.value.sort((analyticsA, analyticsB) => {
+          if (sorted) {
+            return analyticsA[sortBy].localeCompare(analyticsB[sortBy]);
+          }
+          return analyticsB[sortBy].localeCompare(analyticsA[sortBy]);
+        });
+      } else if (sortBy == "date") {
+        state.value.sort((analyticsA, analyticsB) => {
+          if (sorted) {
+            return new Date(analyticsB[sortBy]) - new Date(analyticsA[sortBy]);
+          }
+          return new Date(analyticsA[sortBy]) - new Date(analyticsB[sortBy]);
+        });
+      } else {
+        state.value.sort((analyticsA, analyticsB) => {
+          if (sorted) {
+            return analyticsB[sortBy] - analyticsA[sortBy];
+          }
+          return analyticsA[sortBy] - analyticsB[sortBy];
+        });
+      }
     },
-    editAnalytics: (state, action) => {
-      // state.value[action.payload.index].isVisible = state.value[
-      //   action.payload.index
-      // ]?.isVisible
-      //   ? false
-      //   : true;
-      // console.log("After", current(state));
+    filterAnalytics: (state, action) => {
+      state.value = state.analyticsValue.filter((val) => {
+        if (
+          val[action.payload.searchIn]
+            .toString()
+            .toLowerCase()
+            .includes(action.payload.searchValue.toLowerCase())
+        ) {
+          return true;
+        }
+        return false;
+      });
+    },
+  },
+  extraReducers: {
+    [getAnalytics.pending]: (state, action) => {
+      state.loader = true;
+    },
+    [getAnalytics.fulfilled]: (state, action) => {
+      state.loader = false;
+      state.value = action.payload;
+      state.analyticsValue = action.payload;
+    },
+    [getAnalytics.rejected]: (state, action) => {
+      state.loader = false;
+      state.errors = action.payload;
     },
   },
 });
 
-export const { editAnalytics, addAnalytics } = analyticsSlice.actions;
+export const { sortAnalytics, filterAnalytics } = analyticsSlice.actions;
 export default analyticsSlice.reducer;
